@@ -1,0 +1,28 @@
+#   1.导入模块
+import socket
+
+#   2.创建套接字，使用ＩＰＶ4，ＵＤＰ方式
+udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+#   绑定端口
+#   udp_socket(address) address是一个元组，元组的第一个元素写ip地址，第二个元素　整数端口号
+#   ip地址尽可能为空，当计算机有多个网卡的时候，不同网卡的数据都能被接收
+udp_socket.bind(("", 8888))
+
+#   3.发送数据
+udp_socket.sendto("芜湖,起飞".encode("GBK"), ("192.168.0.101", 8080))
+
+#   4.接收数据（二进制）
+#   recvfrom(1024)从套接字中接收1024个字节的数据，此方法会造成程序阻塞，等待另外一台计算机发来数据，如果对方计算机发来数据，recvfrom会自动解除阻塞
+rec_data = udp_socket.recvfrom(1024)
+#   print(rec_data)
+
+#   5.数据解码，得到字符串 decode(encoding="UTF-8" -- 指定解码格式,errors=""　--　出现错误后如何处理) errors 默认strict(严格模式，解码失败报错) 选择ignore(忽略错误)
+#   encoding 默认 UTF-8
+rec_text = rec_data[0].decode(encoding="GBK", errors="ignore")
+
+#   6.输出显示接收到的数据
+print("来自：", rec_data[1], "的消息:", rec_text)
+
+#   7.关闭套接字
+udp_socket.close()
